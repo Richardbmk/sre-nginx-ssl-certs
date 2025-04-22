@@ -7,7 +7,7 @@ RUN apk add --no-cache git && \
     rm -rf /tmp/app
 
 # Expose the default Port
-EXPOSE 80
+EXPOSE 80 443
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"] 
