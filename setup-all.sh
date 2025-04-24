@@ -1,3 +1,29 @@
+Content-Type: multipart/mixed; boundary="//"
+MIME-Version: 1.0
+ 
+--//
+Content-Type: text/cloud-config; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="cloud-config.txt"
+ 
+#cloud-config
+cloud_final_modules:
+- [scripts-user, always]
+--//
+Content-Type: text/x-shellscript; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment; filename="userdata.txt"
+
+#!/bin/bash
+PROJECT_DIR="/home/ubuntu/sre-nginx-ssl"
+mkdir -p $PROJECT_DIR
+cd $PROJECT_DIR
+
+/bin/echo "Hello World" >> /tmp/testfile.txt
+
 # Variables
 DOMAIN="myapp.ricardoboriba.net"
 EMAIL="rdobmk@gmail.com"
@@ -23,8 +49,6 @@ EOL
 
 # Create docker-compose.yml file
 cat > docker-compose.yml <<EOL
-version: '3'
-
 services:
   app:
     build:
@@ -55,16 +79,6 @@ services:
       - ./certbot/www:/var/www/certbot
     command: certonly --webroot -w /var/www/certbot --email ${EMAIL} -d ${DOMAIN} --agree-tos --non-interactive --no-autorenew
 EOL
-
-cat docker-compose.yml
-
-
-# Check if an argument was provided
-if [ $# -eq 0 ]; then
-        echo "Please provide your configured domain as an argument"
-        echo "Usage: $0 something.example.com/example.com something@gmail.com"
-        exit 1
-fi
 
 mkdir -p nginx
 
@@ -181,3 +195,4 @@ sleep 5
 docker compose up --build -d
 
 echo "Setup complete. Nginx is now configured with SSL and redirection."
+--//--
