@@ -1,9 +1,27 @@
 # Variables
-DOMAIN="$1"
-EMAIL="$2"
+DOMAIN="myapp.ricardoboriba.net"
+EMAIL="rdobmk@gmail.com"
 CERT_PATH="./certbot/conf/live/$DOMAIN/fullchain.pem"
 NGINX_CONFIG="./nginx/nginx.conf"
 
+# Create Dockerfile
+cat > Dockerfile <<EOL
+FROM nginx:alpine
+
+# Clone the simple application repository
+RUN apk add --no-cache git && \
+    git clone https://github.com/dockersamples/linux_tweet_app.git /tmp/app && \
+    cp -r /tmp/app/* /usr/share/nginx/html/ && \
+    rm -rf /tmp/app
+
+# Expose the default Port
+EXPOSE 80 443
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"] 
+EOL
+
+# Create docker-compose.yml file
 cat > docker-compose.yml <<EOL
 version: '3'
 
@@ -47,6 +65,8 @@ if [ $# -eq 0 ]; then
         echo "Usage: $0 something.example.com/example.com something@gmail.com"
         exit 1
 fi
+
+mkdir -p nginx
 
 cat > $NGINX_CONFIG <<EOL
 events {
