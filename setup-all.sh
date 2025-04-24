@@ -4,6 +4,43 @@ EMAIL="$2"
 CERT_PATH="./certbot/conf/live/$DOMAIN/fullchain.pem"
 NGINX_CONFIG="./nginx/nginx.conf"
 
+cat > docker-compose.yml <<EOL
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:80
+    expose:
+      - 80
+
+  nginx:
+    container_name: nginx
+    restart: unless-stopped
+    image: nginx
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+
+  certbot:
+    image: certbot/certbot
+    container_name: certbot
+    volumes:
+      - ./certbot/conf:/etc/letsencrypt
+      - ./certbot/www:/var/www/certbot
+    command: certonly --webroot -w /var/www/certbot --email ${EMAIL} -d ${DOMAIN} --agree-tos --non-interactive --no-autorenew
+EOL
+
+cat docker-compose.yml
+
+
 # Check if an argument was provided
 if [ $# -eq 0 ]; then
         echo "Please provide your configured domain as an argument"
