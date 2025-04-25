@@ -2,7 +2,7 @@
 
 # variables
 REGION="us-east-1"
-INSTANCE_NAME="bestapp"
+INSTANCE_NAME="nginxApp"
 INSTANCE_ID=$(aws ec2 describe-instances --filters \
     Name=tag:Name,Values=${INSTANCE_NAME} \
     --query 'Reservations[*].Instances[*].InstanceId' \

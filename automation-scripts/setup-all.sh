@@ -25,8 +25,8 @@ cd $PROJECT_DIR
 /bin/echo "Hello World" >> /tmp/testfile.txt
 
 # Variables
-DOMAIN="bestapp.ricardoboriba.net"
-EMAIL="rdobmk@gmail.com"
+DOMAIN="${1:-thebest.ricardoboriba.net}"
+EMAIL="${2:-rdobmk@gmail.com}"
 CERT_PATH="./certbot/conf/live/$DOMAIN/fullchain.pem"
 NGINX_CONFIG="./nginx/nginx.conf"
 
