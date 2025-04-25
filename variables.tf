@@ -10,3 +10,8 @@ variable "domain_name" {
   default     = "ricardoboriba.net"
 }
 
+variable "subdomain_name" {
+  description = "The subdomain name for the Route53 record"
+  type        = string
+  default     = "thebest"
+}

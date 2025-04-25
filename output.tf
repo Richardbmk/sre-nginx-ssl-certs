@@ -37,3 +37,9 @@ output "eip_allocation_id" {
   description = "The allocation ID of the Elastic IP"
   value       = aws_eip.app.id
 }
+
+output "app_url" {
+  description = "The URL of the application"
+  value       = aws_route53_record.app.fqdn
+  
+}

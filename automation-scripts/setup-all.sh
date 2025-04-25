@@ -113,6 +113,7 @@ EOL
 
 # Step 1: Generate SSL Certificates with Certbot
 echo "Step 1: Generating SSL certificates for $DOMAIN..."
+docker compose down --volume
 docker compose up --build -d
 
 echo "Certificates generated successfully."

@@ -3,10 +3,16 @@
 # variables
 REGION="us-east-1"
 INSTANCE_NAME="nginxApp"
-INSTANCE_ID=$(aws ec2 describe-instances --filters \
-    Name=tag:Name,Values=${INSTANCE_NAME} \
-    --query 'Reservations[*].Instances[*].InstanceId' \
-    --region ${REGION} --output text)
+INSTANCE_ID=$(aws ec2 describe-instances --filters "Name=tag:Name,Values=${INSTANCE_NAME}" "Name=instance-state-name,Values=running" \
+    --query "Reservations[*].Instances[*].InstanceId" \
+    --region ${REGION} \
+    --output text)
+
+# Check if an instance ID was found
+if [ -z "$INSTANCE_ID" ]; then
+    echo "No running instance found with the name ${INSTANCE_NAME} in region ${REGION}."
+    exit 1
+fi
 
 # Stop the EC2 instance
 aws ec2 stop-instances \

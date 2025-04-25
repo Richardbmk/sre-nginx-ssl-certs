@@ -86,7 +86,7 @@ data "aws_route53_zone" "personal" {
 
 resource "aws_route53_record" "app" {
   zone_id = data.aws_route53_zone.personal.zone_id
-  name    = "thebest"
+  name    = var.subdomain_name
   type    = "A"
   ttl     = 7200
   records = [aws_eip.app.public_ip]
