@@ -45,7 +45,7 @@ base64 -i "${SCRIPT_DIR}/setup-all-update.sh" -o "${SCRIPT_DIR}/setup-all-update
 terraform -chdir="${PROJECT_ROOT}" init
 terraform -chdir="${PROJECT_ROOT}" fmt
 terraform -chdir="${PROJECT_ROOT}" validate
-terraform -chdir="${PROJECT_ROOT}" plan -var "region=${REGION}" -var "subdomain_name=${DOMAIN%%.*}" -var "domain_name=${DOMAIN#*.}" -out=plan.out
+terraform -chdir="${PROJECT_ROOT}" plan -var "region=${REGION}" -var "subdomain_name=${DOMAIN%%.*}" -var "domain_name=${DOMAIN#*.}" -var "ec2_name=${INSTANCE_NAME}" -out=plan.out
 terraform -chdir="${PROJECT_ROOT}" apply -auto-approve plan.out
 terraform -chdir="${PROJECT_ROOT}" output -json > terraform_output.json
 

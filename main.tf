@@ -21,7 +21,7 @@ module "vpc" {
 
   tags = {
     Name    = local.vpc_name
-    Project = "nginxApp"
+    Project = var.ec2_name
   }
 }
 
@@ -106,6 +106,6 @@ resource "aws_instance" "web" {
   }
 
   tags = {
-    Name = "nginxApp"
+    Name = var.ec2_name
   }
 }

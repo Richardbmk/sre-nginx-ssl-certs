@@ -1,7 +1,6 @@
 variable "region" {
   description = "The AWS region to deploy the resources in"
   type        = string
-  # default     = "us-east-1"
 }
 
 variable "instance_type" {
@@ -13,12 +12,16 @@ variable "instance_type" {
 variable "domain_name" {
   description = "The domain name for the Route53 zone"
   type        = string
-  # default     = "ricardoboriba.net"
 }
 
 variable "subdomain_name" {
   description = "The subdomain name for the Route53 record"
   type        = string
-  # default     = "thebest"
+}
+
+variable "ec2_name" {
+  description = "The name of the EC2 instance"
+  type        = string
+  default     = "nginxApp"
 }
 
