@@ -98,6 +98,7 @@ If the deployment fails and you are not able to access the application, here are
    - Check if the containers are in running: _sre-nginx-ssl-app_ and _nginx_
    - Check the container logs
    - Check if the certificates have been created.
+   - Check if you hit the [LetsEncrypt rate limit for prod](https://letsencrypt.org/docs/rate-limits/#retrying-after-hitting-rate-limits) environments. You may find a message in the logs like this: _too many certificates (5) already issued for this exact set of domains in the last 168h0m0s, retry after 2025-04-27 05:17:02_
 3. Check the use data script in the EC2 instance.
 4. Domain name is correctly configured in Route 53.
 
@@ -106,5 +107,12 @@ If the deployment fails and you are not able to access the application, here are
 To destroy all the created resources run:
 
 ```
-terraform destroy -var "region=us-east-1" -var "subdomain_name=thebest" -var "domain_name=ricardoboriba.net"
+terraform destroy -var "region=us-east-1" -var "subdomain_name=thebest" -var "domain_name=ricardoboriba.net" -var "ec2_name=nginxApp"
 ```
+
+### Issues I found this setup
+
+- Docker & Docker Compose it is not installed correctly
+- Docker daemon it is not in Running state
+- Certbot/LetsEncrypt Rate Limit for prod environments
+- DNS Caching issues. DNS still pointing to and old Public IP
