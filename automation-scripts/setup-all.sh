@@ -25,8 +25,8 @@ cd $PROJECT_DIR
 /bin/echo "Hello World" >> /tmp/testfile.txt
 
 # Variables
-DOMAIN="bestapp.ricardoboriba.net"
-EMAIL="rdobmk@gmail.com"
+DOMAIN="${1:-thebest.ricardoboriba.net}"
+EMAIL="${2:-rdobmk@gmail.com}"
 CERT_PATH="./certbot/conf/live/$DOMAIN/fullchain.pem"
 NGINX_CONFIG="./nginx/nginx.conf"
 
@@ -113,6 +113,7 @@ EOL
 
 # Step 1: Generate SSL Certificates with Certbot
 echo "Step 1: Generating SSL certificates for $DOMAIN..."
+docker compose down --volume
 docker compose up --build -d
 
 echo "Certificates generated successfully."
