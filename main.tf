@@ -2,7 +2,7 @@ locals {
   vpc_name = "my-vpc"
 
   vpc_cidr = "10.0.0.0/16"
-  azs      = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs      = slice(data.aws_availability_zones.available.names, 0, 2)
 }
 
 ################################################################################
@@ -21,7 +21,7 @@ module "vpc" {
 
   tags = {
     Name    = local.vpc_name
-    Project = "nginxApp"
+    Project = var.ec2_name
   }
 }
 
@@ -81,7 +81,7 @@ resource "aws_eip" "app" {
 }
 
 data "aws_route53_zone" "personal" {
-  name         = var.domain_name
+  name = var.domain_name
 }
 
 resource "aws_route53_record" "app" {
@@ -106,6 +106,6 @@ resource "aws_instance" "web" {
   }
 
   tags = {
-    Name = "nginxApp"
+    Name = var.ec2_name
   }
 }

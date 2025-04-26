@@ -36,3 +36,9 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+plan.out
+terraform_output.json
+
+automation-scripts/setup-all_base64.txt
+automation-scripts/setup-all-update_base64.txt
+automation-scripts/setup-all-update.sh
