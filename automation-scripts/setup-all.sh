@@ -18,17 +18,11 @@ Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment; filename="userdata.txt"
 
 #!/bin/bash
-PROJECT_DIR="/home/ubuntu/sre-nginx-ssl"
-mkdir -p $PROJECT_DIR
-cd $PROJECT_DIR
+
+mkdir -p $VM_PROJECT_DIR
+cd $VM_PROJECT_DIR
 
 /bin/echo "Hello World" >> /tmp/testfile.txt
-
-# Variables
-DOMAIN="${1:-thebest.ricardoboriba.net}"
-EMAIL="${2:-rdobmk@gmail.com}"
-CERT_PATH="./certbot/conf/live/$DOMAIN/fullchain.pem"
-NGINX_CONFIG="./nginx/nginx.conf"
 
 # Create Dockerfile
 cat > Dockerfile <<EOL
@@ -100,8 +94,8 @@ http {
 
         location / {
             proxy_pass http://app:80/;
-            proxy_set_header Host \$host;
-            proxy_set_header X-Real-IP \$remote_addr;
+            proxy_set_header Host \$${q}host;
+            proxy_set_header X-Real-IP \$${q}remote_addr;
         }
 
         location ~ /.well-known/acme-challenge/ {
@@ -139,7 +133,7 @@ http {
 
         # Redirect all HTTP requests to HTTPS with a 301 Moved Permanently response
         location / {
-            return 301 https://\$host\$request_uri;
+            return 301 https://\$${q}host\$${q}request_uri;
         }
 
         # Allow Let's Encrypt certificate renewal without redirection
@@ -173,9 +167,9 @@ http {
         # Proxy requests to the app container
         location / {
             proxy_pass http://app:80/;
-            proxy_set_header Host \$host;
-            proxy_set_header X-Real-IP \$remote_addr;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header Host \$${q}host;
+            proxy_set_header X-Real-IP \$${q}remote_addr;
+            proxy_set_header X-Forwarded-For \$${q}proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto https;
         }
 
