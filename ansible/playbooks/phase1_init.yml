@@ -1,0 +1,49 @@
+---
+- name: Deploy initial HTTP-only configuration
+  hosts: linux_servers
+  become: true
+  vars:
+    domain: '{{ domain_name }}'
+    email: '{{ email_address }}'
+    project_dir: '/home/ubuntu/sre-nginx-ssl'
+
+  tasks:
+    - name: Create project directory structure
+      file:
+        path: '{{ item }}'
+        state: directory
+        mode: '0755'
+      loop:
+        - '{{ project_dir }}'
+        - '{{ project_dir }}/nginx'
+
+    - name: Create initial Nginx Configuration (HTTP-only with ACME challenge)
+      template:
+        src: nginx-init.conf.j2
+        dest: '{{ project_dir }}/nginx/nginx.conf'
+
+    - name: Create Dockerfile for the App
+      copy:
+        dest: /home/ubuntu/sre-nginx-ssl/Dockerfile
+        content: |
+          FROM nginx:alpine
+          RUN apk add --no-cache git && \
+              git clone https://github.com/dockersamples/linux_tweet_app.git /tmp/app && \
+              cp -r /tmp/app/* /usr/share/nginx/html/ && \
+              rm -rf /tmp/app
+          EXPOSE 80 443
+          CMD ["nginx", "-g", "daemon off;"]
+
+    - name: Create initial Docker Compose without SSL
+      template:
+        src: docker-compose.yml.j2
+        dest: '{{ project_dir }}/docker-compose.yml'
+
+    - name: Start initial containers for ACME challenge
+      command: docker compose -f '{{ project_dir }}/docker-compose.yml' up -d
+      args:
+        chdir: '{{ project_dir }}'
+
+    - name: Wait for Nginx to be available
+      pause:
+        seconds: 10
