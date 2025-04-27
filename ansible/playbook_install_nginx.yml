@@ -1,0 +1,42 @@
+---
+- hosts: linux_servers
+  name: Install Nginx Web-Server
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      become: true
+    - name: Ensure nginx is at the latest version
+      package:
+        name: nginx
+        state: latest
+      become: true
+
+    - name: Start nginx
+      service:
+        name: nginx
+        state: started
+      become: true
+
+    - name: Copy the nginx config file and restart nginx
+      copy:
+        src: ./static_site.cfg
+        dest: /etc/nginx/nginx.cfg
+        owner: root
+        group: root
+        mode: 0644
+      become: true
+
+    - name: Copy the content of the web site
+      copy:
+        src: ./index.html
+        dest: /usr/share/nginx/html/
+      become: true
+
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
+      become: true
