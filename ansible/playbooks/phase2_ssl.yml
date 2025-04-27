@@ -1,0 +1,30 @@
+---
+- name: Check certificates existence and configure HTTPS
+  hosts: linux_servers
+  become: true
+  vars:
+    domain: '{{ domain_name }}'
+    email: '{{ email_address }}'
+    project_dir: '/home/ubuntu/sre-nginx-ssl'
+
+  tasks:
+    - name: Check if SSL certificates exist
+      stat:
+        path: '{{ project_dir }}/certbot/conf/live/{{ domain }}/fullchain.pem'
+      register: ssl_cert
+
+    - name: Create SSL & SSL Redirect Nginx configuration
+      template:
+        src: nginx-ssl.conf.j2
+        dest: '{{ project_dir }}/nginx/nginx.conf'
+
+    - name: Restart containers with SSL new Nginx configuration
+      shell: |
+        docker compose -f '{{ project_dir }}/docker-compose.yml' down --volumes
+        docker compose -f '{{ project_dir }}/docker-compose.yml' up -d
+      args:
+        chdir: '{{ project_dir }}'
+
+    - name: Wait for Nginx to be available
+      pause:
+        seconds: 10

@@ -8,19 +8,8 @@
 - name: Phase 1 - Initial Setup with HTTP only
   import_playbook: phase1_init.yml
 
-- name: Wait for ACME challenge setup to be ready
-  hosts: linux_servers
-  become: true
-  tasks:
-    - name: Wait for Nginx to be available
-      uri:
-        url: 'http://{{ ansible_host }}'
-        return_content: yes
-        status_code: 200, 301
-      register: webpage
-      until: webpage.status is defined
-      retries: 10
-      delay: 5
-      ignore_errors: yes
-# - name: Phase 2 - Certificate Generation and HTTPS Setup
-#   import_playbook: phase2_ssl.yml
+- name: Phase 2 - Certificate Generation and HTTPS Setup
+  import_playbook: phase2_ssl.yml
+
+- name: Phase 3 - Verification of HTTPS Setup on local machine
+  import_playbook: verification_state.yml
