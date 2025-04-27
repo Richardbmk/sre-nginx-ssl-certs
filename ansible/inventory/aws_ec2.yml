@@ -1,0 +1,17 @@
+plugin: amazon.aws.aws_ec2
+regions:
+  - "{{ lookup('env', 'REGION') }}"
+
+filters:
+  tag:Name: "{{ lookup('env', 'EC2_NAME') }}"
+  instance-state-name: running
+
+groups:
+  linux_servers: "tags.Name is defined and tags.Name == lookup('env', 'EC2_NAME')"
+
+compose:
+  ansible_host: public_ip_address
+  aws_region: placement.region
+  instance_name: tags.Name
+  expected_name: "{{ lookup('env', 'EC2_NAME') }}"
+  ansible_python_interpreter: '/usr/bin/python3.12'
