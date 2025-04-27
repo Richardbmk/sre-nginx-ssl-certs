@@ -91,21 +91,22 @@ resource "aws_route53_record" "app" {
   ttl     = 7200
   records = [aws_eip.app.public_ip]
 }
+resource "aws_key_pair" "ssh_key" {
+  key_name   = var.key_name
+  public_key = file("~/.ssh/${var.key_name}.pub")
+}
 
 resource "aws_instance" "web" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
+  key_name      = aws_key_pair.ssh_key.key_name
 
   vpc_security_group_ids = [aws_security_group.allow_instance_access.id]
   subnet_id              = element(module.vpc.public_subnets, 0)
-
-  user_data = file("${path.module}/automation-scripts/machine-initial-setup.sh")
-
-  lifecycle {
-    ignore_changes = [user_data]
-  }
 
   tags = {
     Name = var.ec2_name
   }
 }
+
+
