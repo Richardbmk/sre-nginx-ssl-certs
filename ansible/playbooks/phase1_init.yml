@@ -47,3 +47,15 @@
     - name: Wait for Nginx to be available
       pause:
         seconds: 10
+
+    - name: Wait for Nginx to be available
+      uri:
+        url: 'http://localhost:80'
+        return_content: yes
+        status_code: 200, 301
+        validate_certs: no
+      register: webpage
+      until: webpage.status is defined
+      retries: 10
+      delay: 5
+      ignore_errors: yes

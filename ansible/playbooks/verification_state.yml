@@ -1,0 +1,39 @@
+---
+- name: Verification steps
+  hosts: localhost
+  connection: local
+  become: false
+  gather_facts: false
+  vars:
+    domain: '{{ domain_name }}'
+  tasks:
+    - name: Verify HTTP to HTTPS redirect
+      uri:
+        url: 'http://{{ domain }}'
+        method: GET
+        status_code: 301
+        follow_redirects: none
+      register: redirect_check
+      ignore_errors: yes
+
+    - name: Show redirect status
+      debug:
+        msg: "HTTP to HTTPS redirect is {{ 'working' if redirect_check is success else 'NOT working' }}"
+
+    - name: Verify HTTPS site is accessible
+      uri:
+        url: 'https://{{ domain }}'
+        method: GET
+        status_code: 200
+        validate_certs: yes
+      register: https_check
+      ignore_errors: yes
+
+    - name: Show HTTPS status
+      debug:
+        msg: "HTTPS site is {{ 'accessible' if https_check is success else 'NOT accessible' }}"
+
+    - name: Final deployment status
+      debug:
+        msg: 'Deployment completed successfully! Site is available at https://{{ domain }}'
+      when: https_check is success
