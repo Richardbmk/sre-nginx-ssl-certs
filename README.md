@@ -117,6 +117,8 @@ terraform destroy -var "region=us-east-1" -var "subdomain_name=thebest" -var "do
 - Certbot/LetsEncrypt Rate Limit for prod environments
 - DNS Caching issues. DNS still pointing to and old Public IP
 
+The solution works, just not that consistently, for better reliability please read the next section where I point you use the same solution but [using Ansible](https://github.com/Richardbmk/sre-nginx-ssl-certs/tree/ansible-setup) instead of EC2 Instance User data.
+
 ## Alternative & Better solution with Ansible
 
 This approach work but not it is not consistent and require too much troubleshooting when it doesn't work. Therefore I decided to implement the same solution but adding [Ansible](https://docs.ansible.com/) to manage the configuration of instance instead of using [EC2 User data](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/user-data.html). Find the [ansible solution](https://github.com/Richardbmk/sre-nginx-ssl-certs/tree/ansible-setup) in the branch with the name ansible-setup. Please read the documentation to understand how to run the ansible version, there are some key differences about how to run the script to deploy the end-to-end solution.
