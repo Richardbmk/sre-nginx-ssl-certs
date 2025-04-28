@@ -134,9 +134,10 @@ If the deployment fails and you are not able to access the application via HTTPS
 To destroy all the created resources run:
 
 ```
-terraform destroy -var "region=us-east-1" -var "subdomain_name=tweetsapp" -var "domain_name=ricardoboriba.net" -var "ec2_name=nginxApp" -var "key_name=sre-keys
+terraform destroy -var "region=us-east-1" -var "subdomain_name=tweetsapp" -var "domain_name=ricardoboriba.net" -var "ec2_name=nginxApp" -var "key_name=sre-keys"
 ```
 
 ### Issues I found on this setup
 
-- I still finding issues...
+- No big issues found
+- Solution works fines every time I run the automation script
